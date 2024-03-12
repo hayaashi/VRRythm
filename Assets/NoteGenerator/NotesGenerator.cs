@@ -7,7 +7,7 @@ using LitJson;
 
 public class NotesGenerator : MonoBehaviour
 {
-    public string musicName;
+    //public string musicName;
 
 
     [Serializable]
@@ -30,23 +30,33 @@ public class NotesGenerator : MonoBehaviour
         public List<Note> notes;
     }
 
-    
 
 
+    [System.NonSerialized]
     public static List<int> scoreNum = new List<int>(); // ノーツの番号を順に入れる
+
+    [System.NonSerialized]
     public List<int> scoreBlock = new List<int>(); // ノーツの種類を順に入れる
+
+    [System.NonSerialized]
     public List<int> scoreLPB = new List<int>(); // ノーツのLPBを順に入れる
     private int BPM;
+
+    [System.NonSerialized]
     public int LPB;
 
     [SerializeField]
     CubeGenerator cg;
 
     [SerializeField]
-    AudioSource audioSource;
+    TextAsset musicJson;
 
     [SerializeField]
-    string a;
+    AudioClip musicClip;
+
+    [SerializeField]
+    AudioSource audioSource;
+
 
     [SerializeField]
     NotesManager notesManager;
@@ -106,7 +116,8 @@ public class NotesGenerator : MonoBehaviour
 
     void MusicReading()
     {
-        string inputString = Resources.Load<TextAsset>(musicName).ToString();
+        string inputString = musicJson.ToString();
+            //Resources.Load<TextAsset>(musicName).ToString();
         JsonData jsondata = JsonMapper.ToObject(inputString);
 
         MusicLoad(jsondata);
@@ -116,6 +127,11 @@ public class NotesGenerator : MonoBehaviour
 
         BPM = int.Parse(jsondata["bpm"].ToString());
         LPB = int.Parse(jsondata["notes"][difficult][0]["lpb"].ToString());
+    }
+
+    private void Start()
+    {
+        audioSource.clip = musicClip;
     }
 
     private void Update()
